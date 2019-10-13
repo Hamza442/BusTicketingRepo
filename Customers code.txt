@@ -1,0 +1,193 @@
+CUSTOMERS CODE:
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+
+namespace ShujaTravelers
+{
+    public partial class Customers : Form
+    {
+        SqlConnection connection = new SqlConnection();
+        string Gender;
+        
+        public Customers()
+        {
+            InitializeComponent();
+           label1.BackColor = Color.Transparent;
+            label2.BackColor = Color.Transparent;
+            label3.BackColor = Color.Transparent;
+            label4.BackColor = Color.Transparent;
+            checkBox1.BackColor = Color.Transparent;
+            checkBox2.BackColor = Color.Transparent;
+            comboBox1.MaxLength = 13;
+            textBox2.MaxLength = 30;
+            textBox3.MaxLength = 11;
+            connection.ConnectionString ="Data Source=ADMIN-PC\\SQLSERVER;Initial Catalog=dbShujaTravelers;Integrated Security=True";
+            GetCNIC();
+        }
+        private void GetCNIC()
+        {
+            connection.Open();
+            SqlCommand command = new SqlCommand();
+            command.Connection = connection;
+            command.CommandText = "select * from tblCustomers";
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                comboBox1.Items.Add(reader.GetValue(0));
+            }
+            connection.Close();
+        }
+
+        private void Ticketing_button_Click(object sender, EventArgs e)
+        {
+            Ticketng Ticketing = new Ticketng();
+            Ticketing.Show();
+            Visible = false;
+        }
+       
+
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Reset_button_Click(object sender, EventArgs e)
+        {
+            comboBox1.Text = " ";
+            textBox2.Text = " ";
+            textBox3.Text = " ";
+            checkBox1.Checked = false;
+            checkBox2.Checked = false;
+           
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Save_button_Click(object sender, EventArgs e)
+        {
+            if (comboBox1.Text == "" || textBox2.Text == "" || textBox3.Text == "" || Gender == "")
+            {
+                MessageBox.Show("Please Provide All the Fields");
+            }
+            else
+            {
+
+                try
+                {
+                    connection.Open();
+                    SqlCommand Cmd = new SqlCommand();
+                    Cmd.Connection = connection;
+                    Cmd.CommandText = "insert into tblCustomers(C_CNIC,CName,Gender,PhoneNo)  values('" + comboBox1.Text.ToUpper() + "','" + textBox2.Text.ToUpper() + "','" + Gender.ToUpper() + "','" + textBox3.Text.ToUpper() + "')";
+                    Cmd.ExecuteNonQuery();
+                    MessageBox.Show("Your Data Has been Saved");
+                    connection.Close();
+                }
+
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error " + ex);
+                }
+            }
+        }
+
+        private void Male_checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Gender = "Male";
+        }
+
+        private void Female_checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Gender = "Female";
+        }
+
+        private void Bus_button_Click(object sender, EventArgs e)
+        {
+            Buses Buses = new Buses();
+            Buses.Show();
+            Visible = false;
+        }
+
+        private void Route_button_Click(object sender, EventArgs e)
+        {
+            Routes Route = new Routes();
+            Route.Show();
+            Visible = false;
+        }
+
+        private void PhoneNo_textBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CustomerName_textBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CustomerCnic_textBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+       
+
+      
+
+        private void PhoneNo_textBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+                MessageBox.Show("Enter a Valid Number");
+            }
+        }
+
+        private void Delete_button_Click(object sender, EventArgs e)
+        {
+            connection.Open();
+            SqlCommand command = new SqlCommand();
+            command.Connection = connection;
+            command.CommandText = "delete from tblCustomers where C_CNIC='" + comboBox1.Text.ToUpper() + "'";
+            command.ExecuteNonQuery();
+            MessageBox.Show("Deleted");
+            connection.Close();
+        }
+
+        private void CNIC_comboBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+                MessageBox.Show("Enter a Valid Number");
+            }
+        }
+
+        private void CustomerName_textBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar) && !char.IsWhiteSpace(e.KeyChar))
+            {
+                e.Handled = true;
+                MessageBox.Show("Enter Alphabets only");
+            }
+        }
+
+      
+    }
+}
+
+
+

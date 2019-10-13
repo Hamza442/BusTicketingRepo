@@ -1,0 +1,186 @@
+Route code:
+
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+
+namespace ShujaTravelers
+{
+    public partial class Routes : Form
+    {
+        SqlConnection connection = new SqlConnection();
+        public Routes()
+        {
+            InitializeComponent();
+            label1.BackColor = Color.Transparent;
+            label2.BackColor = Color.Transparent;
+            label3.BackColor = Color.Transparent;
+            label4.BackColor = Color.Transparent;
+            comboBox1.MaxLength = 20;
+            textBox2.MaxLength = 30;
+            textBox3.MaxLength=30;
+            connection.ConnectionString="Data Source=ADMIN-PC\\SQLSERVER;Initial Catalog=dbShujaTravelers;Integrated Security=True";
+            GetRID();
+        }
+        private void GetRID()
+        {
+            connection.Open();
+            SqlCommand command = new SqlCommand();
+            command.Connection = connection;
+            command.CommandText = "select * from tblRoutes";
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                comboBox1.Items.Add(reader.GetValue(0));
+            }
+            connection.Close();
+        }
+
+        private void Form3_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Bus_button_Click(object sender, EventArgs e)
+        {
+            Buses Bus = new Buses();
+            Bus.Show();
+            Visible = false;
+        }
+
+        private void Reset_button_Click(object sender, EventArgs e)
+        {
+            comboBox1.Text = " ";
+            textBox2.Text = " ";
+            textBox3.Text = " ";
+            textBox4.Text = " ";
+        }
+
+        private void Ticketing_button_Click(object sender, EventArgs e)
+        {
+            Ticketng Ticketing = new Ticketng();
+            Ticketing.Show();
+            Visible = false;
+        }
+
+        private void Customer_button_Click(object sender, EventArgs e)
+        {
+            Customers Customer = new Customers();
+            Customer.Show();
+            Visible = false;
+        }
+
+        private void Save_button_Click(object sender, EventArgs e)
+        {
+            if (comboBox1.Text == "" || textBox2.Text == "" || textBox3.Text == "" || textBox4.Text == "")
+            {
+                MessageBox.Show("Please Fill All The Fields");
+            }
+            else
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand cdm = new SqlCommand();
+                    cdm.Connection = connection;
+                    cdm.CommandText = "insert into tblRoutes(R_ID,Departure,Destination,Fare) values('" + comboBox1.Text.ToUpper() + "','" + textBox2.Text.ToUpper() + "','" + textBox3.Text.ToUpper() + "','" + textBox4.Text.ToUpper() + "')";
+                    cdm.ExecuteNonQuery();
+                    MessageBox.Show("Your Data is Saved");
+                    connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error " + ex);
+                }
+            }
+        }
+
+        private void Fare_textBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Destination_textBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Departure_textBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void RouteID_textBox_TextChanged(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void Fare_textBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if(!char.IsControl(e.KeyChar)&&!char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+                MessageBox.Show("Only Numeric value can be fare");
+            }
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+     
+
+        private void Dep_textBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar))
+            {
+                e.Handled = true;
+                MessageBox.Show("Departure cannot be number");
+            }
+        }
+
+        private void Des_textBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar))
+            {
+                e.Handled = true;
+                MessageBox.Show("Destination cannot be number");
+            }
+        }
+
+        private void Delete_button_Click(object sender, EventArgs e)
+        {
+            connection.Open();
+            SqlCommand command = new SqlCommand();
+            command.Connection = connection;
+            command.CommandText = "delete from tblRoutes where R_ID='" + comboBox1.Text.ToUpper() + "'";
+            command.ExecuteNonQuery();
+            MessageBox.Show("Deleted");
+            connection.Close();
+        }
+
+        private void RID_comboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void RouteID_comboBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsLetterOrDigit(e.KeyChar))
+            {
+                e.Handled = true;
+                MessageBox.Show("Special Characters can,t be part of Route_ID");
+            }
+        }
+    }
+}

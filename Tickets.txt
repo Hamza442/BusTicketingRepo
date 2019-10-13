@@ -1,0 +1,197 @@
+TICKETS CODE:
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+
+namespace ShujaTravelers
+{
+    public partial class Ticketng : Form
+    {
+        SqlConnection connection = new SqlConnection();
+        public Ticketng()
+        {
+            InitializeComponent();
+            label1.BackColor = Color.Transparent;
+            label2.BackColor = Color.Transparent;
+            label3.BackColor = Color.Transparent;
+            label4.BackColor = Color.Transparent;
+            label5.BackColor = Color.Transparent;
+            label6.BackColor = Color.Transparent;
+            label7.BackColor = Color.Transparent;
+            textBox1.MaxLength = 10;
+            textBox4.MaxLength = 3;
+            connection.ConnectionString = "Data Source=ADMIN-PC\\SQLSERVER;Initial Catalog=dbShujaTravelers;Integrated Security=True";
+            GetCNIC();
+            GetBNo();
+        }
+
+        private void GetCNIC()
+        {
+
+            connection.Open();
+            SqlCommand command = new SqlCommand();
+            command.Connection = connection;
+            command.CommandText = "select * from tblCustomers";
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                comboBox2.Items.Add(reader.GetValue(0));
+            }
+            connection.Close();
+        }
+        private void GetBNo()
+        {
+
+            connection.Open();
+            SqlCommand command = new SqlCommand();
+            command.Connection = connection;
+            command.CommandText = "select * from tblBuses";
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                comboBox1.Items.Add(reader.GetValue(0));
+            }
+            connection.Close();
+        }
+        private void Form4_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Bus_button_Click(object sender, EventArgs e)
+        {
+            Buses Bus = new Buses();
+            Bus.Show();
+            Visible = false;
+        }
+
+        private void Customer_button_Click(object sender, EventArgs e)
+        {
+            Customers Customer = new Customers();
+            Customer.Show();
+            Visible = false;
+        }
+
+        private void Reset_button_Click(object sender, EventArgs e)
+        {
+            textBox1.Text = " ";
+            comboBox1.Text = " ";
+            comboBox2.Text = " ";
+            textBox4.Text = " ";
+            dateTimePicker1.Text = "";
+            dateTimePicker2.Text = "";
+            dateTimePicker3.Text = "";
+        }
+
+        private void Route_button_Click(object sender, EventArgs e)
+        {
+            Routes Route = new Routes();
+            Route.Show();
+            Visible = false;
+        }
+
+        private void Confirm_button_Click(object sender, EventArgs e)
+        {
+            if (textBox1.Text == "" || comboBox1.Text == "" || comboBox2.Text == "" || textBox4.Text == "" || dateTimePicker1.Text == "" || dateTimePicker2.Text == "" || dateTimePicker3.Text == "")
+            {
+                MessageBox.Show("Please Fill All the Fields");
+            }
+            else
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = connection;
+                    cmd.CommandText = "insert into tblTicketing(T_ID,B_No,C_CNIC,SeatNo,DTime,ATime,IssueDate) values('" + textBox1.Text.ToUpper() + "','" + comboBox1.Text.ToUpper() + "','" + comboBox2.Text.ToUpper() + "','" + textBox4.Text.ToUpper() + "','" + dateTimePicker1.Value.ToString("MM/dd/yyyy") + "','" + dateTimePicker2.Value.ToString("MM/dd/yyyy") + "','" + dateTimePicker3.Value.ToString("MM/dd/yyyy") + "')";
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Your Data Has been Saved");
+                    connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Your Data is Saves" + ex);
+                }
+            }
+        }
+
+        private void IssueDate_textBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ArrivalTime_textBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DepartureTime_textBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SeatNo_textBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CustomerCnic_comboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BusNo_comboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void TicketNo_textBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SeatNo_textBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if(!char.IsControl(e.KeyChar)&&!char.IsLetterOrDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TID_textBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsLetterOrDigit(e.KeyChar))
+            {
+                e.Handled = true;
+                MessageBox.Show("Special Characters can,t be part of TID");
+            }
+        }
+
+        private void Delete_button_Click(object sender, EventArgs e)
+        {
+            connection.Open();
+            SqlCommand command = new SqlCommand();
+            command.Connection = connection;
+            command.CommandText = "delete from tblTicketing where C_CNIC='" + comboBox2.Text.ToUpper() + "'";
+            command.ExecuteNonQuery();
+            MessageBox.Show("Deleted");
+            connection.Close();
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
